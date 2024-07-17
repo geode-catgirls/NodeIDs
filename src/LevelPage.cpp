@@ -54,19 +54,17 @@ $register_ids(LevelPage) {
 
 struct LevelPageIDs : Modify<LevelPageIDs, LevelPage> {
     static void onModify(auto& self) {
-        if (!self.setHookPriority("LevelPage::create", GEODE_ID_PRIORITY)) {
-            log::warn("Failed to set LevelPage::create hook priority, node IDs may not work properly");
+        if (!self.setHookPriority("LevelPage::init", GEODE_ID_PRIORITY)) {
+            log::warn("Failed to set LevelPage::init hook priority, node IDs may not work properly");
         }
     }
 
-    // LevelPage::init is half-inlined on windows
-    static LevelPage* create(GJGameLevel* level) {
-        auto layer = LevelPage::create(level);
-        if (!layer) return nullptr;
+    bool init(GJGameLevel* level) {
+        if (!LevelPage::init(level)) return false;
 
-        NodeIDs::get()->provide(layer);
+        NodeIDs::get()->provide(this);
 
-        return layer;
+        return true;
     }
 
     void updateDynamicPage(GJGameLevel* level) {

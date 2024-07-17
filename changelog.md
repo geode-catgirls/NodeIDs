@@ -1,5 +1,25 @@
 # Node IDs Changelog
 
+## v1.13.1
+* Fixed improper assignment of claim-button in LevelListLayer
+
+## v1.13.0
+* Added LevelListLayer
+* Added FriendsProfilePage
+* Added DemonInfoPopup
+* Added SecretLayer2 (thanks @MuhXd [#98](https://github.com/geode-sdk/NodeIDs/pull/98))
+* Fixed parental control crash in InfoLayer while loading comments (thanks @SpaghettDev [#94](https://github.com/geode-sdk/NodeIDs/pull/94))
+* Fixed ProfilePage positioning issues (name running away, info button misaligned after refresh)
+* Fixed some CustomizeObjectLayer issues (invisible clear text button, misalignments)
+* Fixed EditorPauseLayer issues (thanks @Alphalaneous [#95](https://github.com/geode-sdk/NodeIDs/pull/95))
+
+## v1.12.0
+
+ * Bump Geode to v3.0.0-beta.1
+
+## v1.11.0
+ * Add IDs for all the EditButtonBars in EditorUI as well as for the edit buttons (move, rotate, etc.) 
+
 ## v1.10.1
  * Temporarily remove LevelListLayer IDs as there were no layouts which will need to be added due to API breaks
 

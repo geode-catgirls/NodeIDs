@@ -96,6 +96,24 @@ $register_ids(ProfilePage) {
     socialsMenu->setZOrder(10);
     m_mainLayer->addChild(socialsMenu);
 
+    auto usernameMenu = CCMenu::create();
+    usernameMenu->setLayout(
+        RowLayout::create()
+            ->setGap(3.f)
+            ->setAxisAlignment(AxisAlignment::Center)
+            ->setCrossAxisOverflow(false)
+            ->setAutoScale(false)
+    );
+    usernameMenu->setID("username-menu");
+    usernameMenu->setPosition({(winSize.width / 2), (winSize.height / 2) + 125.f});
+    usernameMenu->setContentSize({286, 40});
+    usernameMenu->setZOrder(20);
+    m_mainLayer->addChild(usernameMenu);
+
+    switchToMenu(m_usernameLabel, usernameMenu);
+    m_usernameLabel->setZOrder(20);
+    usernameMenu->updateLayout();
+
 }
 
 void wrapSimplePlayer(CCNode* player, CCArray* buttons, CCSize size = {42.6f, 42.6f}) {
@@ -172,7 +190,7 @@ struct ProfilePageIDs : Modify<ProfilePageIDs, ProfilePage> {
             bmFontContainer->setID(fmt::format("{}-label-container", label));
             bmFontContainer->setLayoutOptions(
                 AxisLayoutOptions::create()
-                    ->setMinScale(.0f)
+                    ->setScaleLimits(.0f, 1.f)
             );
 
             bmFont->setPosition({0, bmFontContainer->getContentSize().height / 2});
@@ -183,7 +201,7 @@ struct ProfilePageIDs : Modify<ProfilePageIDs, ProfilePage> {
             icon->setLayoutOptions(
                 AxisLayoutOptions::create()
                     ->setRelativeScale(.9f)
-                    ->setMinScale(.0f)
+                    ->setScaleLimits(.0f, 1.f)
                     ->setNextGap(10.f)
             );
             if(typeinfo_cast<CCMenuItemSpriteExtra*>(icon)) {
@@ -283,6 +301,9 @@ struct ProfilePageIDs : Modify<ProfilePageIDs, ProfilePage> {
         #if GEODE_COMP_GD_VERSION >= 22030
             static_cast<CCNode*>(m_buttons->objectAtIndex(idx++))->setID("info-button");
         #endif
+        #if GEODE_COMP_GD_VERSION >= 22060
+            static_cast<CCNode*>(m_buttons->objectAtIndex(idx++))->setID("copy-username-button");
+        #endif
 
         if(!m_ownProfile) {
             if(GJAccountManager::sharedState()->m_accountID != m_accountID) {
@@ -356,6 +377,31 @@ struct ProfilePageIDs : Modify<ProfilePageIDs, ProfilePage> {
                 socialsMenu->addChild(twitchButton);
             }
             socialsMenu->updateLayout();
+        }
+
+        if(auto usernameMenu = m_mainLayer->getChildByID("username-menu")) {
+            if(auto modBadge = m_mainLayer->getChildByID("mod-badge")) {
+                modBadge->retain();
+                modBadge->removeFromParent();
+                usernameMenu->addChild(modBadge);
+                if(usernameMenu->getPositionX() == (winSize.width / 2)) usernameMenu->setPositionX((winSize.width / 2) - 13.f);
+                modBadge->release();
+            } else {
+                if(usernameMenu->getPositionX() == (winSize.width / 2) - 13.f) usernameMenu->setPositionX(winSize.width / 2);
+            }
+            usernameMenu->updateLayout();
+
+            if(auto infoButton = m_buttonMenu->getChildByID("info-button")) {
+                infoButton->setPosition(
+                    (usernameMenu->getPosition() - m_buttonMenu->getPosition()) + (m_usernameLabel->getScaledContentSize() / 2) + CCPoint(8.f, -5.f) - ( (usernameMenu->getContentSize() / 2) - m_usernameLabel->getPosition() )
+                );
+            }
+
+            if(auto copyButton = m_buttonMenu->getChildByID("copy-username-button")) {
+                copyButton->setPosition(
+                    (usernameMenu->getPosition() - m_buttonMenu->getPosition()) - ( (usernameMenu->getContentSize() / 2) - m_usernameLabel->getPosition() )
+                );
+            }
         }
 
     }
