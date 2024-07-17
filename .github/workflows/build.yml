@@ -37,10 +37,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build the mod
-        uses: RoootTheFox/build-geode-mod@main
+        uses: geode-catgirls/build-geode-mod@main
         with:
-          bindings: hiimjustin000/bindings
-          bindings-ref: patch-2
           combine: true
           target: ${{ matrix.config.target }}
       
@@ -50,10 +48,10 @@ jobs:
     needs: ['build']
 
     steps:
-      - uses: RoootTheFox/build-geode-mod/combine@main
+      - uses: geode-catgirls/build-geode-mod/combine@main
         id: build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: Build Output
           path: ${{ steps.build.outputs.build-output }}
